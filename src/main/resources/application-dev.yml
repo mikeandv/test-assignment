@@ -1,0 +1,11 @@
+host: account.jetbrains.com
+encodedPath: /api/v1/
+x-customer-code:
+x-api-key:
+firstName:
+lastName:
+email:
+customerLicensesAssignPath: customer/licenses/assign
+customerLicensesPath: customer/licenses
+customerLicensesByIdPath: customer/licenses/{licenseId}
+customerTeamLicensesByTeamIdPath: customer/teams/{teamId}/licenses
