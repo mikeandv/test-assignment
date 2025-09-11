@@ -1,0 +1,31 @@
+emailFieldValidation: >
+  {
+    "contact": {
+      "email": 123,
+      "firstName": "string",
+      "lastName": "string"
+    },
+    "includeOfflineActivationCode": false,
+    "license": {
+      "productCode": "II",
+      "team": 1
+    },
+    "licenseId": 123,
+    "sendEmail": false
+  }
+firstNameFieldValidation: >
+  {
+    "contact": {
+      "email": "user@example.com",
+      "firstName": "string",
+      "lastName": "string"
+    },
+    "includeOfflineActivationCode": true,
+    "license": {
+      "productCode": "II",
+      "team": 1
+    },
+    "licenseId": "ABC1234567",
+    "sendEmail": true
+  }
+

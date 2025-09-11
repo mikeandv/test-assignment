@@ -18,6 +18,7 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:$junitVersion")
     testImplementation("io.kotest:kotest-assertions-core:$junitVersion")
     testImplementation("io.kotest:kotest-framework-engine:$junitVersion")
+    testImplementation("io.kotest:kotest-framework-datatest:$junitVersion")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")

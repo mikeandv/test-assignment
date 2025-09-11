@@ -5,6 +5,9 @@ x-api-key:
 firstName:
 lastName:
 email:
+fakeFirstName: FakeFirstName
+fakeLastName: FakeLastName
+fakeEmail: fakee_mail@example.com
 customerLicensesAssignPath: customer/licenses/assign
 customerLicensesPath: customer/licenses
 customerLicensesByIdPath: customer/licenses/{licenseId}

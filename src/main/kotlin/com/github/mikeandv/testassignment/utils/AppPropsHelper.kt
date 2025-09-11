@@ -10,7 +10,7 @@ object AppPropsHelper {
     init {
         val env = System.getProperty("app.env")
             ?: System.getenv("APP_ENV")
-            ?: "dev" // env by default
+            ?: "dev2" // env by default
         val fileName = "application-$env.yml"
 
         val yaml = Yaml()
@@ -30,6 +30,9 @@ object AppPropsHelper {
             lastName = lastName,
             fullName = "$firstName $lastName",
             email = yamlMap["email"] as? String ?: error("Missing 'email' in $fileName"),
+            fakeFirstName = yamlMap["fakeFirstName"] as? String ?: error("Missing 'fakeFirstName' in $fileName"),
+            fakeLastName = yamlMap["fakeLastName"] as? String ?: error("Missing 'fakeLastName' in $fileName"),
+            fakeEmail = yamlMap["fakeEmail"] as? String ?: error("Missing 'fakeEmail' in $fileName"),
             customerLicensesAssignPath = yamlMap["customerLicensesAssignPath"] as? String
                 ?: error("Missing 'customerLicensesAssignPath' in $fileName"),
             customerLicensesPath = yamlMap["customerLicensesPath"] as? String
@@ -37,7 +40,9 @@ object AppPropsHelper {
             customerLicensesByIdPath = yamlMap["customerLicensesByIdPath"] as? String
                 ?: error("Missing 'customerLicensesByIdPath' in $fileName"),
             customerTeamLicensesByTeamIdPath = yamlMap["customerTeamLicensesByTeamIdPath"] as? String
-                ?: error("Missing 'customerTeamLicensesByTeamIdPath' in $fileName")
+                ?: error("Missing 'customerTeamLicensesByTeamIdPath' in $fileName"),
+            customerChangeLicensesTeam = yamlMap["customerChangeLicensesTeam"] as? String
+                ?: error("Missing 'customerChangeLicensesTeam' in $fileName")
         )
     }
 
@@ -50,10 +55,14 @@ object AppPropsHelper {
         val lastName: String,
         val fullName: String,
         val email: String,
+        val fakeFirstName: String,
+        val fakeLastName: String,
+        val fakeEmail: String,
         val customerLicensesAssignPath: String,
         val customerLicensesPath: String,
         val customerLicensesByIdPath: String,
-        val customerTeamLicensesByTeamIdPath: String
+        val customerTeamLicensesByTeamIdPath: String,
+        val customerChangeLicensesTeam: String
     )
 }
 
