@@ -30,9 +30,10 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     reports {
-        junitXml.required.set(true)
         html.required.set(true)
+        junitXml.required.set(true)
     }
+
 }
 kotlin {
     jvmToolchain(24)

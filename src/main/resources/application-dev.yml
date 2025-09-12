@@ -2,12 +2,12 @@ host: account.jetbrains.com
 encodedPath: /api/v1/
 x-customer-code:
 x-api-key:
-firstName:
-lastName:
-email:
-fakeFirstName: FakeFirstName
-fakeLastName: FakeLastName
-fakeEmail: fakee_mail@example.com
+mainUserFirstName:
+mainUserLastName:
+mainUserEmail:
+secondUserFirstName:
+secondUserLastName:
+secondUserEmail:
 customerLicensesAssignPath: customer/licenses/assign
 customerLicensesPath: customer/licenses
 customerLicensesByIdPath: customer/licenses/{licenseId}

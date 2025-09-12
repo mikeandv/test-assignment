@@ -19,20 +19,27 @@ object AppPropsHelper {
 
 
         val yamlMap: Map<String, Any> = yaml.load(inputStream)
-        val firstName = yamlMap["firstName"] as? String ?: error("Missing 'firstName' in $fileName")
-        val lastName = yamlMap["lastName"] as? String ?: error("Missing 'lastName' in $fileName")
+        val mainUserFirstName =
+            yamlMap["mainUserFirstName"] as? String ?: error("Missing 'mainUserFirstName' in $fileName")
+        val mainUserLastName =
+            yamlMap["mainUserLastName"] as? String ?: error("Missing 'mainUserLastName' in $fileName")
+        val secondUserFirstName =
+            yamlMap["secondUserFirstName"] as? String ?: error("Missing 'secondUserFirstName' in $fileName")
+        val secondUserLastName =
+            yamlMap["secondUserLastName"] as? String ?: error("Missing 'secondUserLastName' in $fileName")
         props = AppProps(
             host = yamlMap["host"] as? String ?: error("Missing 'host' $fileName"),
             encodedPath = yamlMap["encodedPath"] as? String ?: error("Missing 'encodedPath' $fileName"),
             xCustomerCode = yamlMap["x-customer-code"] as? String ?: error("Missing 'x-customer-code' $fileName"),
             xApiKey = yamlMap["x-api-key"] as? String ?: error("Missing 'x-api-key' in $fileName"),
-            firstName = firstName,
-            lastName = lastName,
-            fullName = "$firstName $lastName",
-            email = yamlMap["email"] as? String ?: error("Missing 'email' in $fileName"),
-            fakeFirstName = yamlMap["fakeFirstName"] as? String ?: error("Missing 'fakeFirstName' in $fileName"),
-            fakeLastName = yamlMap["fakeLastName"] as? String ?: error("Missing 'fakeLastName' in $fileName"),
-            fakeEmail = yamlMap["fakeEmail"] as? String ?: error("Missing 'fakeEmail' in $fileName"),
+            mainUserFirstName = mainUserFirstName,
+            mainUserLastName = mainUserLastName,
+            mainUserFullName = "$mainUserFirstName $mainUserLastName",
+            mainUserEmail = yamlMap["mainUserEmail"] as? String ?: error("Missing 'mainUserEmail' in $fileName"),
+            secondUserFirstName = secondUserFirstName,
+            secondUserLastName = secondUserLastName,
+            secondUserFullName = "$secondUserFirstName $secondUserLastName",
+            secondUserEmail = yamlMap["secondUserEmail"] as? String ?: error("Missing 'secondUserEmail' in $fileName"),
             customerLicensesAssignPath = yamlMap["customerLicensesAssignPath"] as? String
                 ?: error("Missing 'customerLicensesAssignPath' in $fileName"),
             customerLicensesPath = yamlMap["customerLicensesPath"] as? String
@@ -51,13 +58,14 @@ object AppPropsHelper {
         val encodedPath: String,
         val xCustomerCode: String,
         val xApiKey: String,
-        val firstName: String,
-        val lastName: String,
-        val fullName: String,
-        val email: String,
-        val fakeFirstName: String,
-        val fakeLastName: String,
-        val fakeEmail: String,
+        val mainUserFirstName: String,
+        val mainUserLastName: String,
+        val mainUserFullName: String,
+        val mainUserEmail: String,
+        val secondUserFirstName: String,
+        val secondUserLastName: String,
+        val secondUserFullName: String,
+        val secondUserEmail: String,
         val customerLicensesAssignPath: String,
         val customerLicensesPath: String,
         val customerLicensesByIdPath: String,

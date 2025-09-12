@@ -3,16 +3,7 @@ package com.github.mikeandv.testassignment.utils
 import com.github.mikeandv.testassignment.entity.AssignLicenseRequest
 import com.github.mikeandv.testassignment.entity.ChangeTeamRequest
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlin.collections.map
-import kotlin.collections.toMutableMap
+import kotlinx.serialization.json.*
 
 fun changePayloadParameterValue(testData: Any, path: List<String>, newValue: Any?): String {
     val requestAsJson = when (testData) {
@@ -22,6 +13,10 @@ fun changePayloadParameterValue(testData: Any, path: List<String>, newValue: Any
     }
     val updatedJson = requestAsJson.replace(path, anyToJsonPrimitive(newValue))
     return Json.encodeToString(updatedJson)
+}
+
+fun getEmptyJsonObject(): String {
+    return JsonObject(emptyMap()).toString()
 }
 
 fun removePayloadParameterValue(testData: Any, path: List<String>): String {
@@ -34,11 +29,12 @@ fun removePayloadParameterValue(testData: Any, path: List<String>): String {
     return Json.encodeToString(updatedJson)
 }
 
-private fun anyToJsonPrimitive(value: Any?): JsonPrimitive = when (value) {
+private fun anyToJsonPrimitive(value: Any?): JsonElement = when (value) {
     null -> JsonNull
     is String -> JsonPrimitive(value)
     is Number -> JsonPrimitive(value)
     is Boolean -> JsonPrimitive(value)
+    is Unit -> JsonObject(emptyMap())
     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
 }
 

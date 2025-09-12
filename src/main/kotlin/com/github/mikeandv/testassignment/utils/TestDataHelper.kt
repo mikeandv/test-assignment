@@ -7,6 +7,7 @@ import com.github.mikeandv.testassignment.entity.ChangeTeamRequest
 import com.github.mikeandv.testassignment.entity.LicenseResponse
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 
 object TestDataHelper {
     val client = HttpClientHelper.getAuthorizedClient()
@@ -18,17 +19,75 @@ object TestDataHelper {
     }
 
 
-    suspend fun getFakeUserAssignLicenseRequestWithLicenseId(): Pair<String, AssignLicenseRequest> {
+    suspend fun getAllocatedAssignLicense(): Pair<String, AssignLicenseRequest> {
         val license = getLicensesList().firstOrNull { it.assignee == null && it.isAvailableToAssign }
             ?: throw IllegalStateException("No available license found without assignee")
 
+        val response = client.post(AppPropsHelper.props.customerLicensesAssignPath) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                AssignLicenseRequest(
+                    contact = AssigneeContactRequest(
+                        AppPropsHelper.props.secondUserEmail,
+                        AppPropsHelper.props.secondUserFirstName,
+                        AppPropsHelper.props.secondUserLastName
+                    ),
+                    includeOfflineActivationCode = false,
+                    license = null,
+                    licenseId = license.licenseId,
+                    sendEmail = false
+                )
+            )
+        }
+        if (response.status != HttpStatusCode.OK) {
+            throw IllegalStateException("Assign license to second user request failed with status ${response.status}")
+        }
         return Pair(
             license.licenseId,
             AssignLicenseRequest(
                 contact = AssigneeContactRequest(
-                    AppPropsHelper.props.fakeEmail,
-                    AppPropsHelper.props.fakeFirstName,
-                    AppPropsHelper.props.fakeLastName
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
+                ),
+                includeOfflineActivationCode = false,
+                license = null,
+                licenseId = license.licenseId,
+                sendEmail = false
+            )
+        )
+    }
+
+    suspend fun getAllocatedToSameUserAssignLicense(): Pair<String, AssignLicenseRequest> {
+        val license = getLicensesList().firstOrNull { it.assignee == null && it.isAvailableToAssign }
+            ?: throw IllegalStateException("No available license found without assignee")
+
+        val response = client.post(AppPropsHelper.props.customerLicensesAssignPath) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                AssignLicenseRequest(
+                    contact = AssigneeContactRequest(
+                        AppPropsHelper.props.mainUserEmail,
+                        AppPropsHelper.props.mainUserFirstName,
+                        AppPropsHelper.props.mainUserLastName
+                    ),
+                    includeOfflineActivationCode = false,
+                    license = null,
+                    licenseId = license.licenseId,
+                    sendEmail = false
+                )
+            )
+        }
+        if (response.status != HttpStatusCode.OK) {
+            throw IllegalStateException("Assign license to main user request failed with status ${response.status}")
+        }
+        return Pair(
+            license.licenseId,
+            AssignLicenseRequest(
+                contact = AssigneeContactRequest(
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
                 ),
                 includeOfflineActivationCode = false,
                 license = null,
@@ -46,13 +105,55 @@ object TestDataHelper {
             license.licenseId,
             AssignLicenseRequest(
                 contact = AssigneeContactRequest(
-                    AppPropsHelper.props.email,
-                    AppPropsHelper.props.firstName,
-                    AppPropsHelper.props.lastName
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
                 ),
                 includeOfflineActivationCode = false,
                 license = null,
                 licenseId = license.licenseId,
+                sendEmail = false
+            )
+        )
+    }
+
+    suspend fun getUnavailableToAssignLicense(): Pair<String, AssignLicenseRequest> {
+        val license = getLicensesList().firstOrNull { it.assignee == null && !it.isAvailableToAssign }
+            ?: throw IllegalStateException("No available license found without assignee")
+
+        return Pair(
+            license.licenseId,
+            AssignLicenseRequest(
+                contact = AssigneeContactRequest(
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
+                ),
+                includeOfflineActivationCode = false,
+                license = null,
+                licenseId = license.licenseId,
+                sendEmail = false
+            )
+        )
+    }
+
+    suspend fun getUnavailableToAssignLicenseeFromTeam(): Pair<String, AssignLicenseRequest> {
+        val license = getLicensesList()
+            .groupBy { it.team }
+            .entries.firstOrNull { it.value.all { it.assignee == null && !it.isAvailableToAssign } }
+            ?.value
+            ?.firstOrNull() ?: throw IllegalStateException("No team with only unavailable to assign licenses")
+        return Pair(
+            license.licenseId,
+            AssignLicenseRequest(
+                contact = AssigneeContactRequest(
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
+                ),
+                false,
+                AssignFromTeamRequest(license.product.code, license.team.id),
+                licenseId = null,
                 sendEmail = false
             )
         )
@@ -66,9 +167,9 @@ object TestDataHelper {
             license.licenseId,
             AssignLicenseRequest(
                 contact = AssigneeContactRequest(
-                    AppPropsHelper.props.email,
-                    AppPropsHelper.props.firstName,
-                    AppPropsHelper.props.lastName
+                    AppPropsHelper.props.mainUserEmail,
+                    AppPropsHelper.props.mainUserFirstName,
+                    AppPropsHelper.props.mainUserLastName
                 ),
                 false,
                 AssignFromTeamRequest(license.product.code, license.team.id),
@@ -118,6 +219,7 @@ object TestDataHelper {
 
         val licenses = result.take(licenseCount).map { it.licenseId }
         if (licenses.isEmpty()) throw IllegalStateException("No available licenses found to transfer")
+        if (licenses.size < licenseCount) throw IllegalStateException("There should be at least 3 licenses in one of the team")
 
         return Pair(
             licenses,
@@ -128,10 +230,8 @@ object TestDataHelper {
     suspend fun getAssignedLicenceCount(): Int {
         return getLicensesList().filter {
             it.assignee != null
-                    && it.assignee.email == AppPropsHelper.props.email
-                    && it.assignee.name == AppPropsHelper.props.fullName
+                    && it.assignee.email == AppPropsHelper.props.mainUserEmail
+                    && it.assignee.name == AppPropsHelper.props.mainUserFullName
         }.size
     }
-
-
 }
