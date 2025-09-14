@@ -35,6 +35,12 @@ private fun anyToJsonPrimitive(value: Any?): JsonElement = when (value) {
     is Number -> JsonPrimitive(value)
     is Boolean -> JsonPrimitive(value)
     is Unit -> JsonObject(emptyMap())
+    is Map<*, *> -> JsonObject(
+        value.entries.associate {
+                (k, v) -> k.toString() to anyToJsonPrimitive(v)
+        }
+    )
+    is Collection<*> -> JsonArray(value.map { anyToJsonPrimitive(it) })
     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
 }
 

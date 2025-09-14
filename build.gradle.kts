@@ -22,6 +22,7 @@ dependencies {
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("org.yaml:snakeyaml:2.2")
@@ -33,6 +34,11 @@ tasks.test {
         html.required.set(true)
         junitXml.required.set(true)
     }
+//    testLogging {
+//        events("passed", "skipped", "failed")
+//        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+//        showStandardStreams = true
+//    }
 
 }
 kotlin {

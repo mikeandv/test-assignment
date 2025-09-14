@@ -17,40 +17,75 @@ object AppPropsHelper {
         val inputStream = ClassLoader.getSystemResourceAsStream(fileName)
             ?: throw FileNotFoundException("$fileName not found!")
 
-
         val yamlMap: Map<String, Any> = yaml.load(inputStream)
-        val mainUserFirstName =
-            yamlMap["mainUserFirstName"] as? String ?: error("Missing 'mainUserFirstName' in $fileName")
-        val mainUserLastName =
-            yamlMap["mainUserLastName"] as? String ?: error("Missing 'mainUserLastName' in $fileName")
-        val secondUserFirstName =
-            yamlMap["secondUserFirstName"] as? String ?: error("Missing 'secondUserFirstName' in $fileName")
-        val secondUserLastName =
-            yamlMap["secondUserLastName"] as? String ?: error("Missing 'secondUserLastName' in $fileName")
-        props = AppProps(
-            host = yamlMap["host"] as? String ?: error("Missing 'host' $fileName"),
-            encodedPath = yamlMap["encodedPath"] as? String ?: error("Missing 'encodedPath' $fileName"),
-            xCustomerCode = yamlMap["x-customer-code"] as? String ?: error("Missing 'x-customer-code' $fileName"),
-            xApiKey = yamlMap["x-api-key"] as? String ?: error("Missing 'x-api-key' in $fileName"),
-            mainUserFirstName = mainUserFirstName,
-            mainUserLastName = mainUserLastName,
-            mainUserFullName = "$mainUserFirstName $mainUserLastName",
-            mainUserEmail = yamlMap["mainUserEmail"] as? String ?: error("Missing 'mainUserEmail' in $fileName"),
-            secondUserFirstName = secondUserFirstName,
-            secondUserLastName = secondUserLastName,
-            secondUserFullName = "$secondUserFirstName $secondUserLastName",
-            secondUserEmail = yamlMap["secondUserEmail"] as? String ?: error("Missing 'secondUserEmail' in $fileName"),
-            customerLicensesAssignPath = yamlMap["customerLicensesAssignPath"] as? String
-                ?: error("Missing 'customerLicensesAssignPath' in $fileName"),
-            customerLicensesPath = yamlMap["customerLicensesPath"] as? String
-                ?: error("Missing 'customerLicensesPath' in $fileName"),
-            customerLicensesByIdPath = yamlMap["customerLicensesByIdPath"] as? String
-                ?: error("Missing 'customerLicensesByIdPath' in $fileName"),
-            customerTeamLicensesByTeamIdPath = yamlMap["customerTeamLicensesByTeamIdPath"] as? String
-                ?: error("Missing 'customerTeamLicensesByTeamIdPath' in $fileName"),
-            customerChangeLicensesTeam = yamlMap["customerChangeLicensesTeam"] as? String
-                ?: error("Missing 'customerChangeLicensesTeam' in $fileName")
+
+        fun requireProp(value: String?, name: String) =
+            value ?: error("Missing required property: $name. Pass it via -D$name=value or set in $fileName")
+
+        val mainUserMap = yamlMap["mainUser"] as? Map<*, *>
+        val secondUserMap = yamlMap["secondUser"] as? Map<*, *>
+
+        val final = AppProps(
+            host = requireProp(yamlMap["host"] as? String?, "host"),
+            encodedPath = requireProp(yamlMap["encodedPath"] as? String?, "encodedPath"),
+            xCustomerCode = requireProp(
+                System.getProperty("xCustomerCode") ?: yamlMap["xCustomerCode"] as? String?,
+                "xCustomerCode"
+            ),
+            xApiKey = requireProp(System.getProperty("xApiKey") ?: yamlMap["xApiKey"] as? String?, "xApiKey"),
+            mainUser = AppProps.User(
+                email = requireProp(
+                    System.getProperty("mainUser.email")
+                        ?: mainUserMap?.get("email") as? String?,
+                    "mainUser.email"
+                ),
+                firstName = requireProp(
+                    System.getProperty("mainUser.firstName")
+                        ?: mainUserMap?.get("firstName") as? String?,
+                    "mainUser.firstName"
+                ),
+                lastName = requireProp(
+                    System.getProperty("mainUser.lastName")
+                        ?: mainUserMap?.get("lastName") as? String?,
+                    "mainUser.lastName"
+                )
+            ),
+            secondUser = AppProps.User(
+                email = requireProp(
+                    System.getProperty("secondUser.email")
+                        ?: secondUserMap?.get("email") as? String?,
+                    "secondUser.email"
+                ),
+                firstName = requireProp(
+                    System.getProperty("secondUser.firstName")
+                        ?: secondUserMap?.get("firstName") as? String?,
+                    "secondUser.firstName"
+                ),
+                lastName = requireProp(
+                    System.getProperty("secondUser.lastName")
+                        ?: secondUserMap?.get("lastName") as? String?,
+                    "secondUser.lastName"
+                )
+            ),
+            customerLicensesAssignPath = requireProp(
+                yamlMap["customerLicensesAssignPath"] as? String?,
+                "customerLicensesAssignPath"
+            ),
+            customerLicensesPath = requireProp(yamlMap["customerLicensesPath"] as? String?, "customerLicensesPath"),
+            customerLicensesByIdPath = requireProp(
+                yamlMap["customerLicensesByIdPath"] as? String?,
+                "customerLicensesByIdPath"
+            ),
+            customerTeamLicensesByTeamIdPath = requireProp(
+                yamlMap["customerTeamLicensesByTeamIdPath"] as? String?, "customerTeamLicensesByTeamIdPath"
+            ),
+            customerChangeLicensesTeam = requireProp(
+                yamlMap["customerChangeLicensesTeam"] as? String?,
+                "customerChangeLicensesTeam"
+            )
         )
+
+        props = final
     }
 
     data class AppProps(
@@ -58,21 +93,33 @@ object AppPropsHelper {
         val encodedPath: String,
         val xCustomerCode: String,
         val xApiKey: String,
-        val mainUserFirstName: String,
-        val mainUserLastName: String,
-        val mainUserFullName: String,
-        val mainUserEmail: String,
-        val secondUserFirstName: String,
-        val secondUserLastName: String,
-        val secondUserFullName: String,
-        val secondUserEmail: String,
+        val mainUser: User,
+        val secondUser: User,
         val customerLicensesAssignPath: String,
         val customerLicensesPath: String,
         val customerLicensesByIdPath: String,
         val customerTeamLicensesByTeamIdPath: String,
         val customerChangeLicensesTeam: String
-    )
+    ) {
+        data class User(
+            val email: String,
+            val firstName: String,
+            val lastName: String,
+        ) {
+            val fullName: String get() = "$firstName $lastName"
+            fun maskName(): User =
+                copy(
+//                    firstName = firstName.take(2) + "*".repeat(11),
+//                    lastName = lastName.take(2) + "*".repeat(10)
+                    firstName = "***",
+                    lastName = ""
+                )
+        }
+
+        val maskedSecondUser: User get() = secondUser.maskName()
+    }
 }
+
 
 
 

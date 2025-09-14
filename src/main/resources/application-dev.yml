@@ -1,14 +1,17 @@
 host: account.jetbrains.com
 encodedPath: /api/v1/
-x-customer-code:
-x-api-key:
-mainUserFirstName:
-mainUserLastName:
-mainUserEmail:
-secondUserFirstName:
-secondUserLastName:
-secondUserEmail:
+xCustomerCode:
+xApiKey:
+mainUser:
+  email:
+  firstName:
+  lastName:
+secondUser:
+  email:
+  firstName: Test
+  lastName: Test
 customerLicensesAssignPath: customer/licenses/assign
 customerLicensesPath: customer/licenses
 customerLicensesByIdPath: customer/licenses/{licenseId}
 customerTeamLicensesByTeamIdPath: customer/teams/{teamId}/licenses
+customerChangeLicensesTeam: customer/changeLicensesTeam
