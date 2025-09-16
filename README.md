@@ -86,7 +86,8 @@ customerTeamLicensesByTeamIdPath: customer/teams/{teamId}/licenses
 #### configure your own env `application-$env.yml`
 
 ```bash
-  ./gradlew test -Dapp.env=$your_env
+  export APP_ENV=$env
+  ./gradlew test
 ```
 
 ### PowerShell
