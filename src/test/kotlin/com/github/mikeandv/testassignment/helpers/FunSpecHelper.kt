@@ -25,7 +25,7 @@ object FunSpecHelper {
         cases: List<AssignLicenseSuccessCase>
     ) {
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val (status, actualLicense) = client.postAndReturnLicense(case.payloadFunc)
 
                 status shouldBe HttpStatusCode.OK
@@ -41,7 +41,7 @@ object FunSpecHelper {
     ) {
         val allRollbacks = mutableListOf<Pair<List<String>, Int>>()
         context(contextName) {
-            test(case) {
+            test("$contextName $case") {
                 val (fromTeamOne, fromTeamTwo, toTeam) = getTeamsByLicenseCount()
                 val licenseFromTeamOne = getLicenseIdByTeamId(fromTeamOne.id)
                 val licenseFromTeamTwo = getLicenseIdByTeamId(fromTeamTwo.id)
@@ -75,7 +75,7 @@ object FunSpecHelper {
     ) {
         val allRollbacks = mutableListOf<Pair<List<String>, Int>>()
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val (status, actualLicenses, fromTeam, toTeam) = client.postAndReturnLicense(
                     case.payloadHelperFunc,
                     case.payloadFunc
@@ -99,7 +99,7 @@ object FunSpecHelper {
         cases: List<ErrorAndStatusCase>,
     ) {
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val (status, error) = client.postAndReturnError(case.payload, case.path)
 
                 status shouldBe case.expectedStatus
@@ -113,7 +113,7 @@ object FunSpecHelper {
         cases: List<AssignLicenseErrorExtendedCase>,
     ) {
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val (status, error) = client.postAndReturnError(case.payloadFunc)
 
                 status shouldBe case.expectedStatus
@@ -128,7 +128,7 @@ object FunSpecHelper {
         cases: List<StatusOnlyCase>
     ) {
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val status = client.postAndReturnStatus(case.payload, case.path)
                 status shouldBe case.expectedStatus
             }
@@ -140,7 +140,7 @@ object FunSpecHelper {
         cases: List<StatusAndBodyCase>
     ) {
         context(contextName) {
-            withData(nameFn = { "value=${it.valueDesc}" }, ts = cases) { case ->
+            withData(nameFn = { "$contextName value=${it.valueDesc}" }, ts = cases) { case ->
                 val (status, body) = client.postAndReturnBody(case.payload, case.path)
                 status shouldBe case.expectedStatus
                 body shouldBe case.expectedBody

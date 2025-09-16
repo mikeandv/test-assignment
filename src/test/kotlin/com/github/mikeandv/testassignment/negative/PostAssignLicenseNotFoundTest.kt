@@ -10,17 +10,11 @@ import kotlinx.coroutines.runBlocking
 
 class PostAssignLicenseNotFoundTest : FunSpec({
     val testDataFromTeam: AssignLicenseRequest = runBlocking {
-        TestDataHelper.getAssignLicenseRequestFromTeam(
-            AppPropsHelper.props.mainUser.email,
-            AppPropsHelper.props.mainUser.firstName,
-            AppPropsHelper.props.mainUser.lastName
-        ).second
+        TestDataHelper.getAssignLicenseRequestFromTeam(AppPropsHelper.props.mainUser).second
     }
     val testData: AssignLicenseRequest = runBlocking {
         TestDataHelper.getAssignLicenseRequestWithLicenseId(
-            AppPropsHelper.props.mainUser.email,
-            AppPropsHelper.props.mainUser.firstName,
-            AppPropsHelper.props.mainUser.lastName
+            AppPropsHelper.props.mainUser
         ).second
     }
 

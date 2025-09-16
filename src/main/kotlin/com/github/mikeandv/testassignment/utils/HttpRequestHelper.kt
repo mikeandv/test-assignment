@@ -16,7 +16,6 @@ object HttpRequestHelper {
             contentType(ContentType.Application.Json)
             setBody(payload.second)
         }
-
         val license = TestDataHelper.getLicenseResponseByLicenseId(payload.first)
         return response.status to license
     }

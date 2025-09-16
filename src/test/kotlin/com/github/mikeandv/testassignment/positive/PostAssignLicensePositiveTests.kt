@@ -14,48 +14,27 @@ class PostAssignLicensePositiveTests : FunSpec({
         listOf(
             AssignLicenseSuccessCase(
                 "to a user with account",
-                {
-                    getAssignLicenseRequestWithLicenseId(
-                        AppPropsHelper.props.mainUser.email,
-                        AppPropsHelper.props.mainUser.firstName,
-                        AppPropsHelper.props.mainUser.lastName,
-                    )
-                },
+                { getAssignLicenseRequestWithLicenseId(AppPropsHelper.props.mainUser) },
                 AppPropsHelper.props.mainUser,
             ),
             AssignLicenseSuccessCase(
                 "to a user without account",
-                {
-                    getAssignLicenseRequestWithLicenseId(
-                        AppPropsHelper.props.secondUser.email,
-                        AppPropsHelper.props.secondUser.firstName,
-                        AppPropsHelper.props.secondUser.lastName,
-                    )
-                },
+                { getAssignLicenseRequestWithLicenseId(AppPropsHelper.props.secondUser) },
                 AppPropsHelper.props.maskedSecondUser,
             ),
             AssignLicenseSuccessCase(
                 "to a user with account but different name and surname",
                 {
                     getAssignLicenseRequestWithLicenseId(
-                        AppPropsHelper.props.mainUser.email,
-                        "Test",
-                        "Test",
+                        AppPropsHelper.props.mainUser.copy(
+                            email = AppPropsHelper.props.mainUser.email,
+                            firstName = "Test",
+                            lastName = "Test"
+                        )
                     )
                 },
                 AppPropsHelper.props.mainUser,
             ),
-            AssignLicenseSuccessCase(
-                "reassign to a same user",
-                {
-                    getAssignLicenseRequestWithLicenseId(
-                        AppPropsHelper.props.mainUser.email,
-                        AppPropsHelper.props.mainUser.firstName,
-                        AppPropsHelper.props.mainUser.lastName,
-                    )
-                },
-                AppPropsHelper.props.mainUser,
-            )
         )
     )
 
@@ -65,22 +44,14 @@ class PostAssignLicensePositiveTests : FunSpec({
             AssignLicenseSuccessCase(
                 "to a user with account",
                 {
-                    getAssignLicenseRequestFromTeam(
-                        AppPropsHelper.props.mainUser.email,
-                        AppPropsHelper.props.mainUser.firstName,
-                        AppPropsHelper.props.mainUser.lastName,
-                    )
+                    getAssignLicenseRequestFromTeam(AppPropsHelper.props.mainUser)
                 },
                 AppPropsHelper.props.mainUser,
             ),
             AssignLicenseSuccessCase(
                 "to a user without account",
                 {
-                    getAssignLicenseRequestFromTeam(
-                        AppPropsHelper.props.secondUser.email,
-                        AppPropsHelper.props.secondUser.firstName,
-                        AppPropsHelper.props.secondUser.lastName,
-                    )
+                    getAssignLicenseRequestFromTeam(AppPropsHelper.props.secondUser)
                 },
                 AppPropsHelper.props.maskedSecondUser,
             ),
@@ -88,20 +59,15 @@ class PostAssignLicensePositiveTests : FunSpec({
                 "to a user with account but different name and surname",
                 {
                     getAssignLicenseRequestFromTeam(
-                        AppPropsHelper.props.mainUser.email,
-                        "Test",
-                        "Test",
+                        AppPropsHelper.props.mainUser.copy(
+                            email = AppPropsHelper.props.mainUser.email,
+                            firstName = "Test",
+                            lastName = "Test"
+                        ),
                     )
                 },
                 AppPropsHelper.props.mainUser,
             )
         )
     )
-
-//TODO Corner case reassign to same person
-//TODO single / assign to person account with wrong name and surname, full name should be unchanged
-//TODO single / assign to person without account with name and surname, full name should be name + last name
-//TODO from team / assign to person account with wrong name and surname, full name should be unchanged
-//TODO from team / assign to person without account with name and surname, full name should be name + last name
-
 })

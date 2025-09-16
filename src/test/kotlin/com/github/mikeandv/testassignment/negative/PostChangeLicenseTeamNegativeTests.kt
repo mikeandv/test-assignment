@@ -57,6 +57,3 @@ class PostChangeLicenseTeamNegativeTests : FunSpec({
         )
     )
 })
-//TODO list is empty
-
-

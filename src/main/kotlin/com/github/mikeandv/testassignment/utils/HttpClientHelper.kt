@@ -37,29 +37,9 @@ object HttpClientHelper {
 //            logger = Logger.SIMPLE
 //        }
     }
-    private val unauthorizedClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
-        }
-        install(DefaultRequest) {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = AppPropsHelper.props.host
-                encodedPath = AppPropsHelper.props.encodedPath
-            }
-            headers.append("X-Customer-Code", AppPropsHelper.props.xCustomerCode)
-        }
-    }
 
-
-    fun  getAuthorizedClient(): HttpClient {
+    fun getAuthorizedClient(): HttpClient {
         return authorizedClient
-    }
-
-    fun getUnauthorizedClient(): HttpClient {
-        return unauthorizedClient
     }
 
 }

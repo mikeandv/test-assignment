@@ -10,7 +10,7 @@ object AppPropsHelper {
     init {
         val env = System.getProperty("app.env")
             ?: System.getenv("APP_ENV")
-            ?: "dev2" // env by default
+            ?: "dev" // env by default
         val fileName = "application-$env.yml"
 
         val yaml = Yaml()

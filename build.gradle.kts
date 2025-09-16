@@ -34,6 +34,7 @@ tasks.test {
         html.required.set(true)
         junitXml.required.set(true)
     }
+    systemProperty("kotest.parallelism", "1")
 //    testLogging {
 //        events("passed", "skipped", "failed")
 //        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL

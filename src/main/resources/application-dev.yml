@@ -11,7 +11,7 @@ secondUser:
   firstName: Test
   lastName: Test
 customerLicensesAssignPath: customer/licenses/assign
+customerChangeLicensesTeam: customer/changeLicensesTeam
 customerLicensesPath: customer/licenses
 customerLicensesByIdPath: customer/licenses/{licenseId}
 customerTeamLicensesByTeamIdPath: customer/teams/{teamId}/licenses
-customerChangeLicensesTeam: customer/changeLicensesTeam
