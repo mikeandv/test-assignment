@@ -10,7 +10,7 @@ This is set of auto-test which covered following scenarios:
 ## Prerequisites
 
 - There are minimum 3 Team in organization with licenses
-- Each team should have more than 3 assignable licenses to run test
+- Each team should have more than 5 assignable licenses to run test
 - One of the team should contain only unavailable to assign licenses (e.g. expired licenses)
 - You need two different accounts. First should already have JetBrains account. Second shouldn't have JetBrains account
 
@@ -53,7 +53,7 @@ customerTeamLicensesByTeamIdPath: customer/teams/{teamId}/licenses
 |:---------------------------------|:---------------------------------------------------------------------|:--------------------------|
 | host                             | JetBrains Account host                                               | Default                   |                  
 | encodedPath                      | API path                                                             | Default                   |
-| xCustomerCode                    | Your company unique customer number in JetBrains Account             | Required                  |
+| xCustomerCode                    | Your company unique customer number as string in JetBrains Account   | Required                  |
 | xApiKey                          | Token generated to access API                                        | Required                  |
 | mainUser                         | Main user for testing. Should have account in JetBrains Account      | Required                  |
 | mainUser.email                   | Main user email                                                      | Required                  |
